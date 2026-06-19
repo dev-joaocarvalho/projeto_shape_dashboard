@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ QG do Shape - V-Taper Dashboard</title>
+    <!-- Tailwind CSS para o Design Premium -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Marked.js para renderizar os arquivos Markdown (.md) direto na tela -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style type="text/tailwindcss">
+        .prose h1 { @apply text-2xl font-black text-emerald-400 mt-4 mb-4 border-b border-zinc-800 pb-2; }
+        .prose h2 { @apply text-xl font-bold text-emerald-400 mt-6 mb-3 border-b border-zinc-800 pb-1; }
+        .prose h3 { @apply text-lg font-semibold text-zinc-300 mt-4 mb-2; }
+        .prose ul { @apply list-disc list-inside space-y-2 text-zinc-400 my-2; }
+        .prose li { @apply bg-zinc-900/50 p-2 rounded-lg border border-zinc-800/60 mb-1; }
+        .prose strong { @apply text-emerald-400 font-semibold; }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-50 font-sans min-h-screen pb-12">
+
+    <!-- HEADER / PERFIL -->
+    <header class="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-md bg-opacity-80">
+        <div class="max-w-md mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-lg font-black tracking-wider text-emerald-400">PROJECT V-TAPER</h1>
+                <p class="text-xs text-zinc-400">João Carvalho • 1,90m • 80kg</p>
+            </div>
+            <span class="bg-emerald-500/10 text-emerald-400 text-xs px-2.5 py-1 rounded-full font-mono border border-emerald-500/20">
+                Hipertrofia ⚡
+            </span>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 mt-6">
+        <!-- NAVEGAÇÃO POR ABAS -->
+        <div class="flex space-x-1 bg-zinc-900 p-1 rounded-xl mb-6 border border-zinc-800">
+            <button onclick="switchTab('treino')" id="tab-treino" class="w-full py-2.5 text-sm font-medium rounded-lg transition-all duration-200 bg-emerald-500 text-zinc-950 font-bold shadow">
+                🏋️‍♂️ Treino
+            </button>
+            <button onclick="switchTab('historico')" id="tab-historico" class="w-full py-2.5 text-sm font-medium rounded-lg transition-all duration-200 text-zinc-400 hover:text-zinc-200">
+                🗓️ Cargas
+            </button>
+            <button onclick="switchTab('ru')" id="tab-ru" class="w-full py-2.5 text-sm font-medium rounded-lg transition-all duration-200 text-zinc-400 hover:text-zinc-200">
+                🍽️ Guia RU
+            </button>
+        </div>
+
+        <!-- CONTAINER DOS CONTEÚDOS -->
+        <div id="content-area" class="prose max-w-none bg-zinc-900/30 p-4 rounded-2xl border border-zinc-900 shadow-xl min-h-[300px]">
+            <div class="flex justify-center items-center h-48">
+                <span class="text-zinc-500 text-sm animate-pulse">Buscando dados do servidor...</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const obterMesAtual = () => {
+            const data = new Date();
+            const ano = data.getFullYear();
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            return `${ano}-${mes}`;
+        };
+
+        const rotas = {
+            treino: './README.md',
+            historico: `./historico/${obterMesAtual()}_progresso.md`,
+            ru: './guias/manual_ru.md'
+        };
+
+        async function carregarConteudo(aba) {
+            const contentArea = document.getElementById('content-area');
+            const url = rotas[aba];
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Arquivo ausente");
+                const markdownText = await response.text();
+                contentArea.innerHTML = marked.parse(markdownText);
+            } catch (error) {
+                if (aba === 'historico') {
+                    contentArea.innerHTML = `
+                        <div class="text-center py-12">
+                            <p class="text-zinc-500 text-sm">Nenhum log de carga encontrado para o mês de ${obterMesAtual()}.</p>
+                            <p class="text-xs text-emerald-400 mt-2">Crie o arquivo historico/${obterMesAtual()}_progresso.md para iniciar!</p>
+                        </div>`;
+                } else {
+                    contentArea.innerHTML = `<p class="text-red-400 text-sm text-center py-12">Adicione os arquivos Markdown para carregar a página.</p>`;
+                }
+            }
+        }
+
+        function switchTab(aba) {
+            ['treino', 'historico', 'ru'].forEach(item => {
+                const btn = document.getElementById(`tab-${item}`);
+                btn.className = "w-full py-2.5 text-sm font-medium rounded-lg transition-all duration-200 text-zinc-400 hover:text-zinc-200";
+            });
+
+            const btnAtivo = document.getElementById(`tab-${aba}`);
+            btnAtivo.className = "w-full py-2.5 text-sm font-medium rounded-lg transition-all duration-200 bg-emerald-500 text-zinc-950 font-bold shadow";
+
+            carregarConteudo(aba);
+        }
+
+        window.onload = () => carregarConteudo('treino');
+    </script>
+</body>
+</html>
