@@ -1,4 +1,4 @@
-# ⚡ Projeto Shape Aesthetic (V-Taper & Pernas Grossas)
+# ⚡ Projeto Shape Aesthetic
 
 Este repositório funciona como o meu **QG de Evolução Física**, centralizando o planejamento de treinos de alta intensidade e a estratégia nutricional para ganho de massa magra. O projeto é otimizado para o ecossistema do **Claude AI** e distribuído via **GitHub Pages** para acesso rápido pelo celular.
 
