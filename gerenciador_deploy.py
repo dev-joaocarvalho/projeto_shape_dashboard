@@ -15,7 +15,7 @@ COMANDOS_GIT = {
 class GerenciadorRepositorio:
     """Classe responsável por encapsular as operações do repositório Git."""
 
-    def __init__(self, mensagem_personalizada: str = ""):
+    def __init__(self, mensagem_personalizada: str = "") -> None:
         """Inicializa o gerenciador com a mensagem de commit desejada.
 
         :param mensagem_personalizada: Texto que será adicionado ao commit.
@@ -34,7 +34,7 @@ class GerenciadorRepositorio:
     def executar_comando(self, comando: list[str]) -> None:
         """Executa um comando no terminal do sistema operacional.
 
-        :param comando: Lista de strings representando o comando e seus argumentos.
+        :param comando: Lista de strings representando o comando e argumentos.
         """
         try:
             subprocess.run(comando, check=True)
@@ -57,8 +57,8 @@ class GerenciadorRepositorio:
 def iniciar_automacao() -> None:
     """Função principal que orquestra a execução do script."""
     print("--- GERENCIADOR DO SHAPE V-TAPER ---")
-    nota_usuario = input("Digite a nota do commit (ou aperte Enter para o padrão): ")
-    
+    nota_usuario = input("Digite a nota do commit (ou Enter para o padrão): ")
+
     gerenciador = GerenciadorRepositorio(mensagem_personalizada=nota_usuario)
     gerenciador.realizar_deploy()
 
